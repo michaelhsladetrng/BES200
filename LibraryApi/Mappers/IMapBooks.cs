@@ -9,5 +9,9 @@ namespace LibraryApi.Mappers
     public interface IMapBooks
     {
         Task<GetBookDetailsResponse> GetBookById(int id);
+        Task<bool> UpdateGenreFor(int id, string genre);
+        Task Remove(int id);
+        Task<GetBookDetailsResponse> Add(PostBooksRequest bookToAdd);
+        Task<GetBooksResponse> GetBooks(string genre);
     }
 }
