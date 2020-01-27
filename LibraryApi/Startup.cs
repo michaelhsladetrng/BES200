@@ -67,6 +67,10 @@ namespace LibraryApi
                 c.IncludeXmlComments(xmlPath);
             });
 
+            services.AddDistributedRedisCache(options => {
+                options.Configuration = Configuration.GetValue<string>("redisHost");  //  "localhost";  TODO: put this in appsettings.json
+            });
+
            
         }
 
