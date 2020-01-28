@@ -71,6 +71,7 @@ namespace LibraryApi
                 options.Configuration = Configuration.GetValue<string>("redisHost");  //  "localhost";  TODO: put this in appsettings.json
             });
 
+            services.AddCors();
            
         }
 
@@ -82,7 +83,12 @@ namespace LibraryApi
                 app.UseDeveloperExceptionPage();
             }
 
-            app.UseCors();
+            app.UseCors(options =>
+            {
+                options.AllowAnyOrigin();
+                options.AllowAnyMethod();
+                options.AllowAnyHeader();
+            });
             app.UseSwagger();
 
             app.UseSwaggerUI(c =>
@@ -102,6 +108,7 @@ namespace LibraryApi
             {
                 endpoints.MapControllers();
             });
+
         }
     }
 }

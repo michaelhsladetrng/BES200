@@ -18,6 +18,7 @@ namespace LibraryApi.Controllers
             Cache = cache;
         }
 
+        //[ResponseCache(Duration = 130, Location = ResponseCacheLocation.Client)]
         [HttpGet("/time2")]
         [ResponseCache(Duration =15, Location = ResponseCacheLocation.Client)]
         public async Task<ActionResult<string>> GetTime2()
@@ -30,7 +31,7 @@ namespace LibraryApi.Controllers
         {
             var time = await Cache.GetAsync("time");
             string newTime = null;
-            if (time == null )
+            if(time == null) // it wasn't in the cache. never was, or was removed after it expired
             {
                 newTime = DateTime.Now.ToLongTimeString();
                 var encodedTime = Encoding.UTF8.GetBytes(newTime);
@@ -45,5 +46,18 @@ namespace LibraryApi.Controllers
 
             return Ok($"It is now {newTime}");
         }
+
+        [HttpGet("/serverstatus")]
+        [ResponseCache(Duration =15, Location = ResponseCacheLocation.Any)]
+        public ActionResult<CacheStatus> GetServerStatus()
+        {
+            return Ok(new CacheStatus { Status = "all good.", CheckedAt = DateTime.Now });
+        }
+    }
+
+    public class CacheStatus
+    {
+        public string Status { get; set; }
+        public DateTime CheckedAt { get; set; }
     }
 }
