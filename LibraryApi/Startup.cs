@@ -18,6 +18,7 @@ using System.Reflection;
 using System.IO;
 using LibraryApi.Mappers;
 using AutoMapper;
+using System.Text.Json.Serialization;
 
 namespace LibraryApi
 {
@@ -35,8 +36,11 @@ namespace LibraryApi
         {
             services.AddControllers()
                 .AddJsonOptions(options =>
+                    {
                     // think more about this before you put this in production...
-                    options.JsonSerializerOptions.Converters.Add(new StringToIntConverter())
+                    options.JsonSerializerOptions.Converters.Add(new StringToIntConverter());
+                    options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+                    }
                 );
             services.AddTransient<IGenerateEnrollmentIds, EnrollmentIdGenerator>();
 
@@ -49,14 +53,14 @@ namespace LibraryApi
 
             services.AddSwaggerGen(c =>
             {
-                
+
                 c.SwaggerDoc("v1", new OpenApiInfo
                 {
                     Title = "Library Api",
                     Version = "1.0",
                     Contact = new OpenApiContact
                     {
-                        Name="Jeff Gonzalez",
+                        Name = "Jeff Gonzalez",
                         Email = "jeff@hypertheory.com"
                     },
                     Description = @"This is the API for our library. Make sure you pay your late fees!"
@@ -67,12 +71,13 @@ namespace LibraryApi
                 c.IncludeXmlComments(xmlPath);
             });
 
-            services.AddDistributedRedisCache(options => {
+            services.AddDistributedRedisCache(options =>
+            {
                 options.Configuration = Configuration.GetValue<string>("redisHost");  //  "localhost";  TODO: put this in appsettings.json
             });
 
             services.AddCors();
-           
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -93,12 +98,12 @@ namespace LibraryApi
 
             app.UseSwaggerUI(c =>
             {
-               
+
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "Library API");
                 c.RoutePrefix = string.Empty;
             });
 
-          //  app.UseHttpsRedirection();
+            //  app.UseHttpsRedirection();
 
             app.UseRouting();
 
