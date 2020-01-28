@@ -13,11 +13,19 @@ namespace LibraryApi.Controllers
     public class ReservationsController : Controller
     {
         LibraryDataContext Context;
+        ISendMessagesToTheReservationProcessor ReservationProcessor;
 
-        public ReservationsController(LibraryDataContext context)
+        public ReservationsController(LibraryDataContext context, ISendMessagesToTheReservationProcessor reservationProcessor)
         {
             Context = context;
+            ReservationProcessor = reservationProcessor;
         }
+
+
+        //public ReservationsController(LibraryDataContext context)
+        //{
+        //    Context = context;
+        //}
 
         public LibraryDataContext Context1 { get => Context; set => Context = value; }
 
@@ -44,6 +52,8 @@ namespace LibraryApi.Controllers
             // 4. return a 201 with a location and attach a GetReservationItemResponse
 
             var response = MapIt(reservation);
+
+            ReservationProcessor.SendForProcessing(response);
 
             return CreatedAtRoute("reservations#getbyid", new { id = response.Id }, response);
         }
