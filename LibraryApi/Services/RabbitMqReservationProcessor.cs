@@ -18,7 +18,7 @@ namespace LibraryApi.Services
 
         public void SendForProcessing( GetReservationItemResponse response)
         {
-            Manager.Publish(response, "", "direct", "ReservationQueue");
+            Manager.Publish(response, "", "direct", "reservationQueue");
         }
 
     }
